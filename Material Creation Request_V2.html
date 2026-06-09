@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Materialanlage – Burgmann Packings</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:15px;background:#f5f4f0;color:#1a1a18;line-height:1.5;}
+.page{max-width:780px;margin:0 auto;padding:2rem 1.5rem 4rem;}
+.top-bar{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2rem;padding-bottom:1.25rem;border-bottom:1px solid #dddbd4;gap:1rem;}
+.header h1{font-size:20px;font-weight:600;}
+.header p{font-size:13px;color:#6b6a64;margin-top:4px;}
+.lang-switch{display:flex;border:1px solid #dddbd4;border-radius:8px;overflow:hidden;flex-shrink:0;}
+.lang-btn{background:#fff;border:none;padding:7px 16px;font-size:13px;font-family:inherit;color:#6b6a64;cursor:pointer;}
+.lang-btn:first-child{border-right:1px solid #dddbd4;}
+.lang-btn.active{background:#185fa5;color:#fff;font-weight:500;}
+.mat-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.75rem;}
+.mat-tab{background:#fff;border:1px solid #dddbd4;border-radius:8px;padding:8px 18px;font-size:14px;font-family:inherit;color:#6b6a64;cursor:pointer;transition:all .15s;}
+.mat-tab:hover{border-color:#b0afa8;color:#1a1a18;}
+.mat-tab.active{border-color:#185fa5;background:#e6f1fb;color:#0c447c;font-weight:500;}
+.mat-tab.soon{opacity:.4;cursor:default;}
+.form-section{display:none;}
+.form-section.active{display:block;}
+.card{background:#fff;border:1px solid #dddbd4;border-radius:12px;padding:1.25rem 1.5rem;margin-bottom:1rem;}
+.card-title{font-size:12px;font-weight:600;color:#8a8880;text-transform:uppercase;letter-spacing:.06em;margin-bottom:1rem;display:flex;align-items:center;gap:7px;}
+.card-title svg{width:15px;height:15px;stroke:#8a8880;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.span2{grid-column:1/-1;}
+.field{display:flex;flex-direction:column;gap:5px;}
+.field label{font-size:13px;font-weight:500;color:#4a4a47;display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.req{color:#c0392b;font-size:11px;}
+.req-one{color:#854f0b;font-size:10px;background:#faeeda;border:1px solid #f0c87a;padding:2px 7px;border-radius:4px;font-weight:400;}
+.opt-badge{background:#f0efe9;color:#8a8880;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:400;}
+.def-badge{background:#eaf3de;color:#3b6d11;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:400;}
+select,input[type=text],input[type=number],textarea{font-family:inherit;font-size:14px;color:#1a1a18;background:#fafaf8;border:1px solid #dddbd4;border-radius:8px;padding:8px 10px;width:100%;outline:none;transition:border-color .15s,background .15s;appearance:none;-webkit-appearance:none;}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238a8880' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:30px;}
+select:focus,input:focus,textarea:focus{border-color:#185fa5;background:#fff;}
+textarea{resize:vertical;min-height:70px;}
+.hint{font-size:11px;color:#a0a09a;margin-top:2px;}
+.toggle-row{display:flex;align-items:center;gap:10px;padding:6px 0;cursor:pointer;}
+.toggle-row input[type=checkbox]{width:16px;height:16px;accent-color:#185fa5;cursor:pointer;flex-shrink:0;}
+.toggle-row span{font-size:13px;color:#4a4a47;}
+.cond{border-left:2px solid #b5d4f4;padding-left:1rem;margin-top:10px;display:none;}
+.cond.on{display:block;}
+.price-row{display:flex;gap:8px;}
+.price-row input{flex:1;}
+.price-row select{width:80px;flex-shrink:0;}
+.att-hint{background:#faeeda;border:1px solid #f0c87a;border-radius:8px;padding:10px 14px;font-size:13px;color:#633806;display:flex;gap:10px;align-items:flex-start;margin-top:1rem;}
+.att-hint svg{width:16px;height:16px;stroke:#854f0b;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;margin-top:1px;}
+.artnr-err{font-size:12px;color:#854f0b;background:#faeeda;border:1px solid #f0c87a;border-radius:6px;padding:6px 10px;margin-top:6px;display:none;}
+.action-bar{display:flex;gap:10px;margin-top:1.5rem;flex-wrap:wrap;}
+.btn{font-family:inherit;font-size:14px;padding:10px 22px;border-radius:8px;cursor:pointer;border:1px solid #dddbd4;background:#fff;color:#1a1a18;display:flex;align-items:center;gap:7px;transition:all .15s;}
+.btn:hover{background:#f5f4f0;border-color:#b0afa8;}
+.btn.primary{background:#185fa5;border-color:#185fa5;color:#fff;}
+.btn.primary:hover{background:#0c447c;}
+.btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;}
+.legend{font-size:12px;color:#8a8880;margin-top:6px;}
+.field.err input,.field.err select,.field.err textarea{border-color:#e24b4a;background:#fcebeb;}
+.field.err .emsg{display:block;}
+.emsg{font-size:12px;color:#c0392b;margin-top:3px;display:none;}
+@media(max-width:580px){.grid2,.grid3{grid-template-columns:1fr;}.span2{grid-column:1;}.top-bar{flex-direction:column;}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="top-bar">
+  <div class="header">
+    <h1 id="ttl">Materialanlage</h1>
+    <p id="sub">Das ausgefüllte Formular wird per E-Mail an das SAP-Stammdaten-Team gesendet.</p>
+  </div>
+  <div class="lang-switch">
+    <button class="lang-btn active" onclick="setLang('de')">DE</button>
+    <button class="lang-btn" onclick="setLang('en')">EN</button>
+  </div>
+</div>
+
+<div class="mat-tabs">
+  <button class="mat-tab active" id="tab-grafit" onclick="selectMat('grafit')">Grafitringe</button>
+  <button class="mat-tab" id="tab-packing" onclick="selectMat('packing')">Packungsringe</button>
+  <button class="mat-tab soon" disabled>+ Weiterer Typ folgt</button>
+</div>
+
+<!-- ===== GRAFIT ===== -->
+<div id="form-grafit" class="form-section active">
+
+  <div class="card">
+    <div class="card-title"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span id="g-sec-sales">Vertrieb</span></div>
+    <div class="grid2">
+      <div class="field" id="gf-vkorg">
+        <label><span id="g-lbl-vkorg">Verkaufsorganisation</span> <span class="req">*</span></label>
+        <select id="g-vkorg" onchange="gUpdateVtweg();gChk('vkorg')">
+          <option value="" id="g-opt-vkorg-ph">— bitte wählen —</option>
+          <option value="4210">4210</option>
+          <option value="1010">1010</option>
+        </select>
+        <span class="emsg" id="g-err-vkorg">Pflichtfeld</span>
+      </div>
+      <div class="field" id="gf-vtweg">
+        <label><span id="g-lbl-vtweg">Vertriebsweg</span> <span class="req">*</span></label>
+        <select id="g-vtweg" onchange="gChk('vtweg')">
+          <option value="" id="g-opt-vtweg-ph">— zuerst Verkaufsorg. wählen —</option>
+        </select>
+        <span class="emsg" id="g-err-vtweg">Pflichtfeld</span>
+      </div>
+    </div>
+    <div class="grid2" style="margin-top:12px;">
+      <div class="field" id="gf-bpg">
+        <label><span id="g-lbl-bpg">BPG-Artikelnummer</span> <span class="req-one" id="g-lbl-one">mind. eine Pflicht</span></label>
+        <input type="text" id="g-bpg" placeholder="≥ 4 Zeichen" oninput="gArtnr()">
+        <span class="hint" id="g-hint-artnr">Mind. 4 Zeichen</span>
+        <span class="emsg">Mind. 4 Zeichen erforderlich</span>
+      </div>
+      <div class="field" id="gf-eb">
+        <label><span id="g-lbl-eb">EB-Artikelnummer</span> <span class="req-one">mind. eine Pflicht</span></label>
+        <input type="text" id="g-eb" placeholder="≥ 4 Zeichen" oninput="gArtnr()">
+        <span class="hint">Mind. 4 Zeichen</span>
+        <span class="emsg">Mind. 4 Zeichen erforderlich</span>
+      </div>
+    </div>
+    <div class="artnr-err" id="g-artnr-err">Bitte mindestens eine Artikelnummer (BPG oder EB) angeben.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><svg viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg><span id="g-sec-mat">Materialeigenschaften</span></div>
+    <div class="grid2">
+      <div class="field" id="gf-purity">
+        <label><span id="g-lbl-purity">Reinheit</span> <span class="req">*</span></label>
+        <select id="g-purity" onchange="gTogglePurity();gChk('purity')">
+          <option value="">— bitte wählen —</option>
+          <option value="97.00%">97.00 %</option>
+          <option value="98.00%">98.00 %</option>
+          <option value="99.00%">99.00 %</option>
+          <option value="99.85%">99.85 %</option>
+          <option value="__m__" id="g-opt-purity-m">Manuelle Eingabe …</option>
+        </select>
+        <span class="emsg">Pflichtfeld</span>
+      </div>
+      <div class="field" id="gf-purity-m" style="display:none;">
+        <label><span id="g-lbl-purity-m">Reinheit (manuell)</span> <span class="req">*</span></label>
+        <input type="text" id="g-purity-m" placeholder="z.B. 99.50 %" oninput="gChk('purity-m')">
+        <span class="emsg">Pflichtfeld</span>
+      </div>
+      <div class="field" id="gf-density">
+        <label><span id="g-lbl-density">Dichte</span> <span class="req">*</span></label>
+        <select id="g-density" onchange="gChk('density')">
+          <option value="">— bitte wählen —</option>
+          <option>1.30 g/cm³</option><option>1.40 g/cm³</option><option>1.50 g/cm³</option>
+          <option>1.60 g/cm³</option><option>1.70 g/cm³</option><option>1.80 g/cm³</option>
+        </select>
+        <span class="emsg">Pflichtfeld</span>
+      </div>
+      <div class="field" id="gf-cut">
+        <label><span id="g-lbl-cut">Schnitt</span> <span class="req">*</span></label>
+        <select id="g-cut" onchange="gToggleCut();gChk('cut')">
+          <option value="">— bitte wählen —</option>
+          <option value="Gerade" id="g-opt-straight">Gerade</option>
+          <option value="Schräg" id="g-opt-angled">Schräg</option>
+          <option value="__m__" id="g-opt-cut-m">Manuelle Eingabe …</option>
+        </select>
+        <span class="emsg">Pflichtfeld</span>
+      </div>
+      <div class="field" id="gf-angle" style="display:none;">
+        <label><span id="g-lbl-angle">Schrägungsgrad</span> <span class="req">*</span></label>
+        <input type="number" id="g-angle" placeholder="45" min="1" max="89" oninput="gChk('angle')">
+        <span class="hint" id="g-hint-angle">Nur wenn ≠ 45° (Standard)</span>
+        <span class="emsg">Gradzahl erforderlich</span>
+      </div>
+      <div class="field" id="gf-cut-m" style="display:none;">
+        <label><span id="g-lbl-cut-m">Schnitt (manuell)</span> <span class="req">*</span></label>
+        <input type="text" id="g-cut-m" oninput="gChk('cut-m')">
+        <span class="emsg">Pflichtfeld</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg><span id="g-sec-dim">Abmessungen</span></div>
+    <div class="grid3">
+      <div class="field" id="gf-id"><label><span id="g-lbl-id">Innendurchmesser d</span> <span class="req">*</span></label><input type="text" id="g-id" placeholder="mm" oninput="gChk('id')"><span class="emsg">Pflichtfeld</span></div>
+      <div class="field" id="gf-od"><label><span id="g-lbl-od">Außendurchmesser D</span> <span class="req">*</span></label><input type="text" id="g-od" placeholder="mm" oninput="gChk('od')"><span class="emsg">Pflichtfeld</span></div>
+      <div class="field" id="gf-h"><label><span id="g-lbl-h">Höhe H</span> <span class="req">*</span></label><input type="text" id="g-h" placeholder="mm" oninput="gChk('h')"><span class="emsg">Pflichtfeld</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span id="g-sec-draw">Zeichnungen / Toleranzen / Normen</span></div>
+    <label class="toggle-row"><input type="checkbox" id="g-chk-draw" onchange="tog('g-draw')"><span id="g-chk-draw-lbl">Zeichnung, Norm oder Toleranzangabe vorhanden</span></label>
+    <div class="cond" id="g-draw">
+      <div class="grid2" style="margin-top:4px;">
+        <div class="field"><label><span id="g-lbl-dwnr">Zeichnungsnummer</span> <span class="opt-badge">optional</span></label><input type="text" id="g-dwnr" placeholder="z.B. ZN-2024-001"></div>
+        <div class="field"><label><span id="g-lbl-norm">Norm / Standard</span> <span class="opt-badge">optional</span></label><input type="text" id="g-norm" placeholder="z.B. DIN EN 12560"></div>
+        <div class="field span2"><label><span id="g-lbl-tol">Toleranzangaben</span> <span class="opt-badge">optional</span></label><textarea id="g-tol" placeholder="z.B. d = +0.1 / -0.0 mm"></textarea></div>
+        <div class="field span2"><label><span id="g-lbl-rem">Weitere Anmerkungen</span> <span class="opt-badge">optional</span></label><textarea id="g-rem"></textarea></div>
+      </div>
+      <div class="att-hint"><svg viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg><span id="g-att-hint">Bitte relevante Zeichnungen oder Dokumente vor dem Senden an die E-Mail anhängen.</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg><span id="g-sec-cap">Kappe (nur bei Grafitringen mit Kappe)</span></div>
+    <label class="toggle-row"><input type="checkbox" id="g-chk-cap" onchange="tog('g-cap')"><span id="g-chk-cap-lbl">Grafitringe mit Kappe</span></label>
+    <div class="cond" id="g-cap">
+      <div class="field" id="gf-cap" style="margin-top:8px;"><label><span id="g-lbl-cap">Kappenmaterial</span> <span class="req">*</span></label><input type="text" id="g-cap-mat" placeholder="z.B. 1.4301, AISI 316, Inconel …" oninput="gChk('cap')"><span class="emsg">Pflichtfeld wenn Kappe gewählt</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg><span id="g-sec-price">Verkaufspreis</span></div>
+    <div class="grid2">
+      <div class="field" id="gf-price"><label><span id="g-lbl-price">Verkaufspreis an Kunden</span> <span class="req">*</span></label><div class="price-row"><input type="number" id="g-price" placeholder="0.00" min="0" step="0.01" oninput="gChk('price')"><select id="g-cur"><option>EUR</option><option>USD</option><option>CHF</option></select></div><span class="emsg">Bitte Preis eingeben</span></div>
+      <div class="field"><label><span id="g-lbl-pu">Preiseinheit</span> <span class="opt-badge">optional</span></label><select id="g-pu"><option value="">—</option><option id="g-opt-pp">je Stück</option><option id="g-opt-p10">je 10 Stück</option><option id="g-opt-p100">je 100 Stück</option><option id="g-opt-pkg">je kg</option></select></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span id="g-sec-notes">Sonstiges</span></div>
+    <div class="field"><label><span id="g-lbl-notes">Weitere Informationen / Anmerkungen</span> <span class="opt-badge">optional</span></label><textarea id="g-notes"></textarea></div>
+  </div>
+
+  <p class="legend"><span class="req">*</span> <span id="g-legend">Pflichtfelder müssen ausgefüllt sein</span></p>
+  <div class="action-bar">
+    <button class="btn primary" onclick="submitG()"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span id="g-btn-send">E-Mail senden</span></button>
+    <button class="btn" onclick="resetG()"><svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg><span id="g-btn-reset">Formular leeren</span></button>
+  </div>
+</div>
+
+<!-- ===== PACKING ===== -->
+<div id="form-packing" class="form-section">
+
+  <div class="card">
+    <div class="card-title"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg><span id="p-sec-sales">Vertrieb</span></div>
+    <div class="grid2">
+      <div class="field" id="pf-vkorg">
+        <label><span id="p-lbl-vkorg">Verkaufsorganisation</span> <span class="req">*</span></label>
+        <select id="p-vkorg" onchange="pUpdateVtweg();pChk('vkorg')">
+          <option value="" id="p-opt-vkorg-ph">— bitte wählen —</option>
+          <option value="4210">4210</option>
+          <option value="1010">1010</option>
+        </select>
+        <span class="emsg">Pflichtfeld</span>
+      </div>
+      <div class="field" id="pf-vtweg">
+        <label><span id="p-lbl-vtweg">Vertriebsweg</span> <span class="req">*</span></label>
+        <select id="p-vtweg" onchange="pChk('vtweg')">
+          <option value="" id="p-opt-vtweg-ph">— zuerst Verkaufsorg. wählen —</option>
+        </select>
+        <span class="emsg">Pflichtfeld</span>
+      </div>
+    </div>
+    <div class="grid2" style="margin-top:12px;">
+      <div class="field" id="pf-bpg">
+        <label><span id="p-lbl-bpg">BPG-Artikelnummer</span> <span class="req-one">mind. eine Pflicht</span></label>
+        <input type="text" id="p-bpg" placeholder="≥ 4 Zeichen" oninput="pArtnr()">
+        <span class="hint" id="p-hint-bpg">Mind. 4 Zeichen</span>
+        <span class="emsg" id="p-err-bpg">Mind. 4 Zeichen erforderlich</span>
+      </div>
+      <div class="field" id="pf-eb">
+        <label><span id="p-lbl-eb">EB-Artikelnummer</span> <span class="req-one">mind. eine Pflicht</span></label>
+        <input type="text" id="p-eb" placeholder="≥ 4 Zeichen" oninput="pArtnr()">
+        <span class="hint" id="p-hint-eb">Mind. 4 Zeichen</span>
+        <span class="emsg" id="p-err-eb">Mind. 4 Zeichen erforderlich</span>
+      </div>
+    </div>
+    <div class="artnr-err" id="p-artnr-err">Bitte mindestens eine Artikelnummer (BPG oder EB) angeben.</div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg><span id="p-sec-dim">Abmessungen</span></div>
+    <div class="grid3">
+      <div class="field" id="pf-id"><label><span id="p-lbl-id">Innendurchmesser d</span> <span class="req">*</span></label><input type="text" id="p-id" placeholder="mm" oninput="pChk('id')"><span class="emsg">Pflichtfeld</span></div>
+      <div class="field" id="pf-od"><label><span id="p-lbl-od">Außendurchmesser D</span> <span class="req">*</span></label><input type="text" id="p-od" placeholder="mm" oninput="pChk('od')"><span class="emsg">Pflichtfeld</span></div>
+      <div class="field" id="pf-h"><label><span id="p-lbl-h">Höhe H</span> <span class="req">*</span></label><input type="text" id="p-h" placeholder="mm" oninput="pChk('h')"><span class="emsg">Pflichtfeld</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><svg viewBox="0 0 24 24"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg><span id="p-sec-cf">Schnitt &amp; Form</span></div>
+    <div class="grid2">
+      <div class="field" id="pf-cut">
+        <label><span id="p-lbl-cut">Schnitt</span> <span class="req">*</span></label>
+        <select id="p-cut" onchange="pToggleCut();pChk('cut')">
+          <option value="" id="p-opt-cut-ph">— bitte wählen —</option>
+          <option value="SC">SC</option>
+          <option value="2SC">2SC</option>
+          <option value="AC">AC</option>
+          <option value="2AC">2AC</option>
+        </select>
+        <span class="emsg">Pflichtfeld</span>
+      </div>
+      <div class="field" id="pf-angle" style="display:none;">
+        <label><span id="p-lbl-angle">Schrägungsgrad</span> <span class="req">*</span></label>
+        <input type="number" id="p-angle" placeholder="45" min="1" max="89" oninput="pChk('angle')">
+        <span class="hint" id="p-hint-angle">Nur wenn ≠ 45° (Standard)</span>
+        <span class="emsg">Gradzahl erforderlich</span>
+      </div>
+      <div class="field">
+        <label><span id="p-lbl-form">Form</span> <span class="def-badge" id="p-def-badge">Standard: gepresst</span></label>
+        <select id="p-form">
+          <option value="" id="p-opt-form-def">Gepresster Ring (Standard)</option>
+          <option value="FP" id="p-opt-fp">FP – Formgepresst</option>
+          <option value="MW" id="p-opt-mw">MW – Mehrwendelring</option>
+        </select>
+        <span class="hint" id="p-hint-form">Ohne Angabe = gepresster Ring</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg><span id="p-sec-draw">Zeichnungen / Toleranzen / Normen</span></div>
+    <label class="toggle-row"><input type="checkbox" id="p-chk-draw" onchange="tog('p-draw')"><span id="p-chk-draw-lbl">Zeichnung, Norm oder Toleranzangabe vorhanden</span></label>
+    <div class="cond" id="p-draw">
+      <div class="grid2" style="margin-top:4px;">
+        <div class="field"><label><span id="p-lbl-dwnr">Zeichnungsnummer</span> <span class="opt-badge">optional</span></label><input type="text" id="p-dwnr" placeholder="z.B. ZN-2024-001"></div>
+        <div class="field"><label><span id="p-lbl-norm">Norm / Standard</span> <span class="opt-badge">optional</span></label><input type="text" id="p-norm" placeholder="z.B. DIN EN 12560"></div>
+        <div class="field span2"><label><span id="p-lbl-tol">Toleranzangaben</span> <span class="opt-badge">optional</span></label><textarea id="p-tol" placeholder="z.B. d = +0.1 / -0.0 mm"></textarea></div>
+        <div class="field span2"><label><span id="p-lbl-rem">Weitere Anmerkungen</span> <span class="opt-badge">optional</span></label><textarea id="p-rem"></textarea></div>
+      </div>
+      <div class="att-hint"><svg viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg><span id="p-att-hint">Bitte relevante Zeichnungen oder Dokumente vor dem Senden an die E-Mail anhängen.</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg><span id="p-sec-notes">Sonstiges</span></div>
+    <div class="field"><label><span id="p-lbl-notes">Weitere Informationen / Anmerkungen</span> <span class="opt-badge">optional</span></label><textarea id="p-notes"></textarea></div>
+  </div>
+
+  <p class="legend"><span class="req">*</span> <span id="p-legend">Pflichtfelder müssen ausgefüllt sein</span></p>
+  <div class="action-bar">
+    <button class="btn primary" onclick="submitP()"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg><span id="p-btn-send">E-Mail senden</span></button>
+    <button class="btn" onclick="resetP()"><svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg><span id="p-btn-reset">Formular leeren</span></button>
+  </div>
+</div>
+
+</div><!-- .page -->
+<script>
+var L='de';
+var VTWEG={'4210':['20','30','40','50','60'],'1010':['10','20']};
+
+var TX={
+  de:{
+    title:'Materialanlage', sub:'Das ausgefüllte Formular wird per E-Mail an das SAP-Stammdaten-Team gesendet.',
+    tab_g:'Grafitringe', tab_p:'Packungsringe', tab_more:'+ Weiterer Typ folgt',
+    sec_sales:'Vertrieb', sec_mat:'Materialeigenschaften', sec_dim:'Abmessungen',
+    sec_draw:'Zeichnungen / Toleranzen / Normen', sec_cap:'Kappe (nur bei Grafitringen mit Kappe)',
+    sec_price:'Verkaufspreis', sec_notes:'Sonstiges', sec_cf:'Schnitt & Form',
+    lbl_vkorg:'Verkaufsorganisation', lbl_vtweg:'Vertriebsweg',
+    lbl_bpg:'BPG-Artikelnummer', lbl_eb:'EB-Artikelnummer', lbl_one:'mind. eine Pflicht',
+    lbl_purity:'Reinheit', lbl_purity_m:'Reinheit (manuell)', lbl_density:'Dichte',
+    lbl_cut:'Schnitt', lbl_angle:'Schrägungsgrad', lbl_cut_m:'Schnitt (manuell)',
+    lbl_form:'Form', def_badge:'Standard: gepresst',
+    lbl_id:'Innendurchmesser d', lbl_od:'Außendurchmesser D', lbl_h:'Höhe H',
+    lbl_dwnr:'Zeichnungsnummer', lbl_norm:'Norm / Standard', lbl_tol:'Toleranzangaben',
+    lbl_rem:'Weitere Anmerkungen', lbl_cap:'Kappenmaterial',
+    lbl_price:'Verkaufspreis an Kunden', lbl_pu:'Preiseinheit', lbl_notes:'Weitere Informationen / Anmerkungen',
+    opt_please:'— bitte wählen —', opt_vtweg_ph:'— zuerst Verkaufsorg. wählen —',
+    opt_manual:'Manuelle Eingabe …', opt_straight:'Gerade', opt_angled:'Schräg',
+    opt_form_def:'Gepresster Ring (Standard)', opt_fp:'FP – Formgepresst', opt_mw:'MW – Mehrwendelring',
+    opt_pp:'je Stück', opt_p10:'je 10 Stück', opt_p100:'je 100 Stück', opt_pkg:'je kg',
+    chk_draw:'Zeichnung, Norm oder Toleranzangabe vorhanden', chk_cap:'Grafitringe mit Kappe',
+    hint_artnr:'Mind. 4 Zeichen', hint_angle:'Nur wenn ≠ 45° (Standard)',
+    hint_form:'Ohne Angabe = gepresster Ring',
+    att_hint:'Bitte relevante Zeichnungen oder Dokumente vor dem Senden an die E-Mail anhängen.',
+    legend:'Pflichtfelder müssen ausgefüllt sein', btn_send:'E-Mail senden', btn_reset:'Formular leeren',
+    alert_req:'Bitte alle Pflichtfelder ausfüllen.', alert_reset:'Formular wirklich leeren?',
+    g_subj:'Materialanlage Grafitringe', g_hdr:'NEUE MATERIALANLAGE – Grafitringe',
+    p_subj:'Materialanlage Packungsringe', p_hdr:'NEUE MATERIALANLAGE – Packungsringe',
+    e_sales:'VERTRIEB', e_vkorg:'Verkaufsorganisation', e_vtweg:'Vertriebsweg',
+    e_bpg:'BPG-Artikelnummer', e_eb:'EB-Artikelnummer',
+    e_mat:'MATERIALEIGENSCHAFTEN', e_purity:'Reinheit', e_density:'Dichte', e_cut:'Schnitt',
+    e_dim:'ABMESSUNGEN', e_id:'Innendurchmesser d', e_od:'Außendurchmesser D', e_h:'Höhe H',
+    e_cf:'SCHNITT & FORM', e_form:'Form',
+    e_draw:'ZEICHNUNG / TOLERANZEN / NORMEN', e_dwnr:'Zeichnungsnummer',
+    e_norm:'Norm / Standard', e_tol:'Toleranzen', e_rem:'Anmerkungen',
+    e_att:'>>> Bitte relevante Zeichnungen oder Dokumente vor dem Senden anhängen. <<<',
+    e_cap:'KAPPE', e_cap_mat:'Kappenmaterial',
+    e_price:'VERKAUFSPREIS', e_priceval:'Preis',
+    e_notes:'SONSTIGES', e_footer:'Gesendet über: Materialanlage-Formular',
+    angled_std:'(45° Standard)', form_pressed:'Gepresster Ring (Standard)',
+    artnr_err:'Bitte mindestens eine Artikelnummer (BPG oder EB) angeben.',
+    artnr_ph:'≥ 4 Zeichen', err_artnr_short:'Mind. 4 Zeichen erforderlich',
+  },
+  en:{
+    title:'Material Creation Request', sub:'The completed form will be sent by email to the SAP master data team.',
+    tab_g:'Graphite Rings', tab_p:'Packing Rings', tab_more:'+ More types coming',
+    sec_sales:'Sales', sec_mat:'Material Properties', sec_dim:'Dimensions',
+    sec_draw:'Drawings / Tolerances / Standards', sec_cap:'Cap (graphite rings with cap only)',
+    sec_price:'Sales Price', sec_notes:'Additional Notes', sec_cf:'Cut & Form',
+    lbl_vkorg:'Sales Organisation', lbl_vtweg:'Distribution Channel',
+    lbl_bpg:'BPG Article Number', lbl_eb:'EB Article Number', lbl_one:'at least one required',
+    lbl_purity:'Purity', lbl_purity_m:'Purity (manual)', lbl_density:'Density',
+    lbl_cut:'Cut', lbl_angle:'Angle (degrees)', lbl_cut_m:'Cut (manual)',
+    lbl_form:'Form', def_badge:'Default: pressed',
+    lbl_id:'Inner diameter d', lbl_od:'Outer diameter D', lbl_h:'Height H',
+    lbl_dwnr:'Drawing number', lbl_norm:'Standard / Norm', lbl_tol:'Tolerances',
+    lbl_rem:'Further remarks', lbl_cap:'Cap material',
+    lbl_price:'Customer sales price', lbl_pu:'Price unit', lbl_notes:'Further information',
+    opt_please:'— please select —', opt_vtweg_ph:'— select sales org first —',
+    opt_manual:'Manual entry …', opt_straight:'Straight', opt_angled:'Angled',
+    opt_form_def:'Pressed ring (default)', opt_fp:'FP – Form pressed', opt_mw:'MW – Multi-turn ring',
+    opt_pp:'per piece', opt_p10:'per 10 pieces', opt_p100:'per 100 pieces', opt_pkg:'per kg',
+    chk_draw:'Drawing, standard or tolerance specification available', chk_cap:'Graphite rings with cap',
+    hint_artnr:'Min. 4 characters', hint_angle:'Only if ≠ 45° (standard)',
+    hint_form:'If not specified = pressed ring',
+    att_hint:'Please attach any relevant drawings or documents to the email before sending.',
+    legend:'Required fields must be completed before sending', btn_send:'Send email', btn_reset:'Clear form',
+    alert_req:'Please complete all required fields.', alert_reset:'Clear the entire form?',
+    g_subj:'Material Creation – Graphite Rings', g_hdr:'NEW MATERIAL CREATION REQUEST – Graphite Rings',
+    p_subj:'Material Creation – Packing Rings', p_hdr:'NEW MATERIAL CREATION REQUEST – Packing Rings',
+    e_sales:'SALES', e_vkorg:'Sales Organisation', e_vtweg:'Distribution Channel',
+    e_bpg:'BPG Article Number', e_eb:'EB Article Number',
+    e_mat:'MATERIAL PROPERTIES', e_purity:'Purity', e_density:'Density', e_cut:'Cut',
+    e_dim:'DIMENSIONS', e_id:'Inner diameter d', e_od:'Outer diameter D', e_h:'Height H',
+    e_cf:'CUT & FORM', e_form:'Form',
+    e_draw:'DRAWINGS / TOLERANCES / STANDARDS', e_dwnr:'Drawing number',
+    e_norm:'Standard / Norm', e_tol:'Tolerances', e_rem:'Remarks',
+    e_att:'>>> Please attach any relevant drawings or documents before sending. <<<',
+    e_cap:'CAP', e_cap_mat:'Cap material',
+    e_price:'SALES PRICE', e_priceval:'Price',
+    e_notes:'ADDITIONAL NOTES', e_footer:'Sent via: Material Creation Form',
+    angled_std:'(45° standard)', form_pressed:'Pressed ring (default)',
+    artnr_err:'Please provide at least one article number (BPG or EB).',
+    artnr_ph:'≥ 4 characters', err_artnr_short:'Min. 4 characters required',
+  }
+};
+
+function t(k){ return TX[L][k]||k; }
+
+function setLang(l){
+  L=l;
+  document.querySelectorAll('.lang-btn').forEach(function(b){ b.classList.toggle('active', b.textContent===l.toUpperCase()); });
+  var x=TX[l];
+  // header
+  document.getElementById('ttl').textContent=x.title;
+  document.getElementById('sub').textContent=x.sub;
+  // tabs
+  document.getElementById('tab-grafit').firstChild.textContent=x.tab_g;
+  document.getElementById('tab-packing').firstChild.textContent=x.tab_p;
+  // grafit labels
+  si('g-sec-sales',x.sec_sales); si('g-sec-mat',x.sec_mat); si('g-sec-dim',x.sec_dim);
+  si('g-sec-draw',x.sec_draw); si('g-sec-cap',x.sec_cap); si('g-sec-price',x.sec_price); si('g-sec-notes',x.sec_notes);
+  si('g-lbl-vkorg',x.lbl_vkorg); si('g-lbl-vtweg',x.lbl_vtweg);
+  si('g-lbl-bpg',x.lbl_bpg); si('g-lbl-eb',x.lbl_eb); si('g-lbl-one',x.lbl_one);
+  si('g-lbl-purity',x.lbl_purity); si('g-lbl-purity-m',x.lbl_purity_m); si('g-lbl-density',x.lbl_density);
+  si('g-lbl-cut',x.lbl_cut); si('g-lbl-angle',x.lbl_angle); si('g-lbl-cut-m',x.lbl_cut_m);
+  si('g-lbl-id',x.lbl_id); si('g-lbl-od',x.lbl_od); si('g-lbl-h',x.lbl_h);
+  si('g-lbl-dwnr',x.lbl_dwnr); si('g-lbl-norm',x.lbl_norm); si('g-lbl-tol',x.lbl_tol);
+  si('g-lbl-rem',x.lbl_rem); si('g-lbl-cap',x.lbl_cap);
+  si('g-lbl-price',x.lbl_price); si('g-lbl-pu',x.lbl_pu); si('g-lbl-notes',x.lbl_notes);
+  si('g-chk-draw-lbl',x.chk_draw); si('g-chk-cap-lbl',x.chk_cap);
+  si('g-hint-artnr',x.hint_artnr); si('g-hint-angle',x.hint_angle);
+  si('g-att-hint',x.att_hint); si('g-legend',x.legend);
+  si('g-btn-send',x.btn_send); si('g-btn-reset',x.btn_reset);
+  si('g-artnr-err',x.artnr_err);
+  si('g-opt-vkorg-ph',x.opt_please); si('g-opt-vtweg-ph',x.opt_vtweg_ph);
+  si('g-opt-purity-m',x.opt_manual); si('g-opt-straight',x.opt_straight); si('g-opt-angled',x.opt_angled); si('g-opt-cut-m',x.opt_manual);
+  si('g-opt-pp',x.opt_pp); si('g-opt-p10',x.opt_p10); si('g-opt-p100',x.opt_p100); si('g-opt-pkg',x.opt_pkg);
+  // packing labels
+  si('p-sec-sales',x.sec_sales); si('p-sec-dim',x.sec_dim); si('p-sec-cf',x.sec_cf);
+  si('p-sec-draw',x.sec_draw); si('p-sec-notes',x.sec_notes);
+  si('p-lbl-vkorg',x.lbl_vkorg); si('p-lbl-vtweg',x.lbl_vtweg);
+  si('p-lbl-bpg',x.lbl_bpg); si('p-lbl-eb',x.lbl_eb);
+  si('p-lbl-id',x.lbl_id); si('p-lbl-od',x.lbl_od); si('p-lbl-h',x.lbl_h);
+  si('p-lbl-cut',x.lbl_cut); si('p-lbl-angle',x.lbl_angle); si('p-lbl-form',x.lbl_form);
+  si('p-def-badge',x.def_badge);
+  si('p-lbl-dwnr',x.lbl_dwnr); si('p-lbl-norm',x.lbl_norm); si('p-lbl-tol',x.lbl_tol);
+  si('p-lbl-rem',x.lbl_rem); si('p-lbl-notes',x.lbl_notes);
+  si('p-chk-draw-lbl',x.chk_draw);
+  si('p-hint-angle',x.hint_angle); si('p-hint-form',x.hint_form);
+  si('p-att-hint',x.att_hint); si('p-legend',x.legend);
+  si('p-btn-send',x.btn_send); si('p-btn-reset',x.btn_reset);
+  si('p-artnr-err',x.artnr_err);
+  si('p-opt-vtweg-ph',x.opt_vtweg_ph);
+  si('p-opt-vkorg-ph',x.opt_please);
+  si('p-opt-cut-ph',x.opt_please);
+  si('p-opt-form-def',x.opt_form_def); si('p-opt-fp',x.opt_fp); si('p-opt-mw',x.opt_mw);
+  si('p-hint-bpg',x.hint_artnr); si('p-hint-eb',x.hint_artnr);
+  si('p-err-bpg',x.err_artnr_short); si('p-err-eb',x.err_artnr_short);
+  // update placeholders on inputs
+  var pbpg=document.getElementById('p-bpg'); if(pbpg) pbpg.placeholder=x.artnr_ph;
+  var peb=document.getElementById('p-eb'); if(peb) peb.placeholder=x.artnr_ph;
+  var gbpg=document.getElementById('g-bpg'); if(gbpg) gbpg.placeholder=x.artnr_ph;
+  var geb=document.getElementById('g-eb'); if(geb) geb.placeholder=x.artnr_ph;
+  // update vtweg placeholders
+  ['g','p'].forEach(function(pfx){
+    var sel=document.getElementById(pfx+'-vtweg');
+    if(sel&&sel.options[0]&&sel.options[0].value===''){
+      sel.options[0].textContent = document.getElementById(pfx+'-vkorg').value ? x.opt_please : x.opt_vtweg_ph;
+    }
+  });
+}
+
+function si(id,txt){ var el=document.getElementById(id); if(el) el.textContent=txt; }
+
+// mat tabs
+function selectMat(type){
+  document.querySelectorAll('.mat-tab').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('tab-'+type).classList.add('active');
+  document.querySelectorAll('.form-section').forEach(function(f){ f.classList.remove('active'); });
+  document.getElementById('form-'+type).classList.add('active');
+}
+
+// vtweg
+function gUpdateVtweg(){
+  var org=document.getElementById('g-vkorg').value, sel=document.getElementById('g-vtweg');
+  sel.innerHTML=''; var ph=document.createElement('option'); ph.value=''; ph.textContent=t('opt_please'); sel.appendChild(ph);
+  if(VTWEG[org]) VTWEG[org].forEach(function(v){ var o=document.createElement('option'); o.value=v; o.textContent=v; sel.appendChild(o); });
+  document.getElementById('gf-vtweg').classList.remove('err');
+}
+function pUpdateVtweg(){
+  var org=document.getElementById('p-vkorg').value, sel=document.getElementById('p-vtweg');
+  sel.innerHTML=''; var ph=document.createElement('option'); ph.value=''; ph.textContent=t('opt_please'); sel.appendChild(ph);
+  if(VTWEG[org]) VTWEG[org].forEach(function(v){ var o=document.createElement('option'); o.value=v; o.textContent=v; sel.appendChild(o); });
+  document.getElementById('pf-vtweg').classList.remove('err');
+}
+
+// conditionals
+function tog(id){ var el=document.getElementById(id), chkId=id.replace('-draw','_chk_draw').replace('-cap','_chk_cap'); var chk=document.getElementById(id.split('-')[0]+'-chk-'+(id.indexOf('draw')>-1?'draw':'cap')); el.classList.toggle('on',chk.checked); }
+document.addEventListener('DOMContentLoaded',function(){
+  document.getElementById('g-chk-draw').onchange=function(){ document.getElementById('g-draw').classList.toggle('on',this.checked); };
+  document.getElementById('g-chk-cap').onchange=function(){ document.getElementById('g-cap').classList.toggle('on',this.checked); };
+  document.getElementById('p-chk-draw').onchange=function(){ document.getElementById('p-draw').classList.toggle('on',this.checked); };
+});
+
+function gTogglePurity(){
+  var m=document.getElementById('g-purity').value==='__m__';
+  document.getElementById('gf-purity-m').style.display=m?'flex':'none';
+  if(!m){document.getElementById('g-purity-m').value=''; document.getElementById('gf-purity-m').classList.remove('err');}
+}
+function gToggleCut(){
+  var v=document.getElementById('g-cut').value;
+  document.getElementById('gf-angle').style.display=v==='Schräg'||v==='Angled'?'flex':'none';
+  document.getElementById('gf-cut-m').style.display=v==='__m__'?'flex':'none';
+  if(v!=='Schräg'&&v!=='Angled'){document.getElementById('g-angle').value=''; document.getElementById('gf-angle').classList.remove('err');}
+  if(v!=='__m__'){document.getElementById('g-cut-m').value=''; document.getElementById('gf-cut-m').classList.remove('err');}
+}
+function pToggleCut(){
+  var v=document.getElementById('p-cut').value;
+  var show=v==='AC'||v==='2AC';
+  document.getElementById('pf-angle').style.display=show?'flex':'none';
+  if(!show){document.getElementById('p-angle').value=''; document.getElementById('pf-angle').classList.remove('err');}
+}
+
+// validation helpers
+function fld(id){ var e=document.getElementById(id); return e?e.value.trim():''; }
+function chkd(id){ var e=document.getElementById(id); return e&&e.checked; }
+function setErr(wrapId,bad){ var w=document.getElementById(wrapId); if(w) w.classList.toggle('err',bad); return !bad; }
+
+function gChk(k){
+  var m={'vkorg':['g-vkorg','gf-vkorg'],'vtweg':['g-vtweg','gf-vtweg'],'purity':['g-purity','gf-purity'],
+    'purity-m':['g-purity-m','gf-purity-m'],'density':['g-density','gf-density'],'cut':['g-cut','gf-cut'],
+    'angle':['g-angle','gf-angle'],'cut-m':['g-cut-m','gf-cut-m'],
+    'id':['g-id','gf-id'],'od':['g-od','gf-od'],'h':['g-h','gf-h'],
+    'cap':['g-cap-mat','gf-cap'],'price':['g-price','gf-price']};
+  if(!m[k]) return true;
+  var val=fld(m[k][0]); return setErr(m[k][1], val===''||val==='__m__');
+}
+function pChk(k){
+  var m={'vkorg':['p-vkorg','pf-vkorg'],'vtweg':['p-vtweg','pf-vtweg'],
+    'id':['p-id','pf-id'],'od':['p-od','pf-od'],'h':['p-h','pf-h'],
+    'cut':['p-cut','pf-cut'],'angle':['p-angle','pf-angle']};
+  if(!m[k]) return true;
+  var val=fld(m[k][0]); return setErr(m[k][1], val===''||val==='__m__');
+}
+
+function gArtnr(){
+  var b=fld('g-bpg'),e=fld('g-eb');
+  setErr('gf-bpg',b.length>0&&b.length<4); setErr('gf-eb',e.length>0&&e.length<4);
+  var bad=b.length<4&&e.length<4;
+  document.getElementById('g-artnr-err').style.display=(bad&&(b.length>0||e.length>0))?'block':'none';
+  return !bad&&(b.length===0||b.length>=4)&&(e.length===0||e.length>=4);
+}
+function pArtnr(){
+  var b=fld('p-bpg'),e=fld('p-eb');
+  setErr('pf-bpg',b.length>0&&b.length<4); setErr('pf-eb',e.length>0&&e.length<4);
+  var bad=b.length<4&&e.length<4;
+  document.getElementById('p-artnr-err').style.display=(bad&&(b.length>0||e.length>0))?'block':'none';
+  return !bad&&(b.length===0||b.length>=4)&&(e.length===0||e.length>=4);
+}
+
+// email builder
+function pad(lbl,val){ var w=24; while(lbl.length<w) lbl+=' '; return lbl+': '+val; }
+function getCutG(){ var v=fld('g-cut'); if(v==='Schräg'||v==='Angled'){var a=fld('g-angle'); return (L==='de'?'Schräg':'Angled')+(a?' ('+a+'°)':' '+t('angled_std'));} if(v==='__m__') return fld('g-cut-m'); return v; }
+function getPurityG(){ return fld('g-purity')==='__m__'?fld('g-purity-m'):fld('g-purity'); }
+function getCutP(){ var v=fld('p-cut'); if(v==='AC'||v==='2AC'){var a=fld('p-angle'); return v+(a?' ('+a+'°)':' '+t('angled_std'));} return v; }
+function getFormP(){ var f=fld('p-form'); if(!f) return t('form_pressed'); if(f==='FP') return L==='de'?'FP – Formgepresst':'FP – Form pressed'; if(f==='MW') return L==='de'?'MW – Mehrwendelring':'MW – Multi-turn ring'; return f; }
+
+function buildG(){
+  var b=fld('g-bpg'),e=fld('g-eb');
+  var ln=[t('g_hdr'),'='.repeat(50),'',t('e_sales'),pad(t('e_vkorg'),fld('g-vkorg')),pad(t('e_vtweg'),fld('g-vtweg'))];
+  if(b) ln.push(pad(t('e_bpg'),b)); if(e) ln.push(pad(t('e_eb'),e));
+  ln.push('',t('e_mat'),pad(t('e_purity'),getPurityG()),pad(t('e_density'),fld('g-density')),pad(t('e_cut'),getCutG()));
+  ln.push('',t('e_dim'),pad(t('e_id'),fld('g-id')+' mm'),pad(t('e_od'),fld('g-od')+' mm'),pad(t('e_h'),fld('g-h')+' mm'),'');
+  if(chkd('g-chk-draw')){ln.push(t('e_draw')); var zn=fld('g-dwnr');if(zn)ln.push(pad(t('e_dwnr'),zn)); var no=fld('g-norm');if(no)ln.push(pad(t('e_norm'),no)); var to=fld('g-tol');if(to)ln.push(pad(t('e_tol'),to)); var re=fld('g-rem');if(re)ln.push(pad(t('e_rem'),re)); ln.push('',t('e_att'),'');}
+  if(chkd('g-chk-cap')){ln.push(t('e_cap'),pad(t('e_cap_mat'),fld('g-cap-mat')),'');}
+  var pu=fld('g-pu'); var priceStr=fld('g-price')+' '+fld('g-cur')+(pu?' ('+pu+')':''); ln.push(t('e_price'),pad(t('e_priceval'),priceStr),'');
+  var no=fld('g-notes'); if(no){ln.push(t('e_notes'),no,'');}
+  ln.push('='.repeat(50),t('e_footer')); return ln.join('\n');
+}
+function buildP(){
+  var b=fld('p-bpg'),e=fld('p-eb');
+  var ln=[t('p_hdr'),'='.repeat(50),'',t('e_sales'),pad(t('e_vkorg'),fld('p-vkorg')),pad(t('e_vtweg'),fld('p-vtweg'))];
+  if(b) ln.push(pad(t('e_bpg'),b)); if(e) ln.push(pad(t('e_eb'),e));
+  ln.push('',t('e_dim'),pad(t('e_id'),fld('p-id')+' mm'),pad(t('e_od'),fld('p-od')+' mm'),pad(t('e_h'),fld('p-h')+' mm'),'');
+  ln.push(t('e_cf'),pad(t('e_cut'),getCutP()),pad(t('e_form'),getFormP()),'');
+  if(chkd('p-chk-draw')){ln.push(t('e_draw')); var zn=fld('p-dwnr');if(zn)ln.push(pad(t('e_dwnr'),zn)); var no=fld('p-norm');if(no)ln.push(pad(t('e_norm'),no)); var to=fld('p-tol');if(to)ln.push(pad(t('e_tol'),to)); var re=fld('p-rem');if(re)ln.push(pad(t('e_rem'),re)); ln.push('',t('e_att'),'');}
+  var no=fld('p-notes'); if(no){ln.push(t('e_notes'),no,'');}
+  ln.push('='.repeat(50),t('e_footer')); return ln.join('\n');
+}
+
+function validateG(){
+  var ok=true;
+  ['vkorg','vtweg','purity','density','cut','id','od','h','price'].forEach(function(k){if(!gChk(k))ok=false;});
+  if(fld('g-purity')==='__m__'&&!gChk('purity-m')) ok=false;
+  var sc=fld('g-cut'); if((sc==='Schräg'||sc==='Angled')&&!gChk('angle')) ok=false;
+  if(sc==='__m__'&&!gChk('cut-m')) ok=false;
+  if(chkd('g-chk-cap')&&!gChk('cap')) ok=false;
+  if(!gArtnr()) ok=false;
+  if(fld('g-bpg').length<4&&fld('g-eb').length<4){ document.getElementById('g-artnr-err').style.display='block'; ok=false; }
+  return ok;
+}
+function validateP(){
+  var ok=true;
+  ['vkorg','vtweg','id','od','h','cut'].forEach(function(k){if(!pChk(k))ok=false;});
+  var sc=fld('p-cut'); if((sc==='AC'||sc==='2AC')&&!pChk('angle')) ok=false;
+  if(!pArtnr()) ok=false;
+  if(fld('p-bpg').length<4&&fld('p-eb').length<4){ document.getElementById('p-artnr-err').style.display='block'; ok=false; }
+  return ok;
+}
+
+function submitG(){
+  if(!validateG()){alert(t('alert_req'));return;}
+  var artnr=fld('g-bpg')||fld('g-eb');
+  window.location.href='mailto:sarah.bommes@burgmannpackings.com?subject='+encodeURIComponent(t('g_subj')+' – '+artnr)+'&body='+encodeURIComponent(buildG());
+}
+function submitP(){
+  if(!validateP()){alert(t('alert_req'));return;}
+  var artnr=fld('p-bpg')||fld('p-eb');
+  window.location.href='mailto:sarah.bommes@burgmannpackings.com?subject='+encodeURIComponent(t('p_subj')+' – '+artnr)+'&body='+encodeURIComponent(buildP());
+}
+
+function resetG(){
+  if(!confirm(t('alert_reset'))) return;
+  document.getElementById('form-grafit').querySelectorAll('input,textarea').forEach(function(el){if(el.type==='checkbox')el.checked=false;else el.value='';});
+  document.getElementById('form-grafit').querySelectorAll('select').forEach(function(el){el.selectedIndex=0;});
+  gUpdateVtweg();
+  document.querySelectorAll('#form-grafit .cond').forEach(function(el){el.classList.remove('on');});
+  document.getElementById('gf-purity-m').style.display='none';
+  document.getElementById('gf-angle').style.display='none';
+  document.getElementById('gf-cut-m').style.display='none';
+  document.querySelectorAll('#form-grafit .err').forEach(function(el){el.classList.remove('err');});
+  document.getElementById('g-artnr-err').style.display='none';
+}
+function resetP(){
+  if(!confirm(t('alert_reset'))) return;
+  document.getElementById('form-packing').querySelectorAll('input,textarea').forEach(function(el){if(el.type==='checkbox')el.checked=false;else el.value='';});
+  document.getElementById('form-packing').querySelectorAll('select').forEach(function(el){el.selectedIndex=0;});
+  pUpdateVtweg();
+  document.querySelectorAll('#form-packing .cond').forEach(function(el){el.classList.remove('on');});
+  document.getElementById('pf-angle').style.display='none';
+  document.querySelectorAll('#form-packing .err').forEach(function(el){el.classList.remove('err');});
+  document.getElementById('p-artnr-err').style.display='none';
+}
+</script>
+</body>
+</html>
